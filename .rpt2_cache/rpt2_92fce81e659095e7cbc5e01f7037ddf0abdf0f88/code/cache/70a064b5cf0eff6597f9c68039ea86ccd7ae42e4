@@ -1,0 +1,4 @@
+{
+  "code": "export class HelloLayabox {\r\n    constructor() {\r\n        const Stage = Laya.Stage;\r\n        const txt = new Laya.Text();\r\n        const { clientWidth, clientHeight } = Laya.Browser;\r\n        Laya.init(clientWidth, clientHeight, Laya.WebGL);\r\n        Laya.stage.alignV = Stage.ALIGN_MIDDLE;\r\n        Laya.stage.alignH = Stage.ALIGN_CENTER;\r\n        Laya.stage.scaleMode = \"showall\";\r\n        Laya.stage.bgColor = \"#232628\";\r\n        txt.text = \"hello_world\";\r\n        txt.bgColor = \"#c30c30\";\r\n        txt.width = clientWidth;\r\n        txt.height = clientHeight;\r\n        txt.align = \"center\";\r\n        txt.valign = \"middle\";\r\n        Laya.stage.addChild(txt);\r\n    }\r\n}\r\nnew HelloLayabox();\r\n",
+  "references": []
+}
