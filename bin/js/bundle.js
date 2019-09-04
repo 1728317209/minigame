@@ -211,8 +211,10 @@
                 const [x, y, width, height] = [100, 100, 100, 100];
                 let sp1 = new Laya.Sprite();
                 let sp2 = new Laya.Sprite();
+                let sp3 = new Laya.Sprite();
                 sp1.pos(x, y);
                 sp2.pos(x, y);
+                sp3.pos(x - (width / 2), y - (height / 2));
                 sp1.pivot(x + (width / 2), y + (height / 2));
                 sp2.pivot(x + (width / 2), y + (height / 2));
                 sp1.graphics.drawPath(x, y, [
@@ -234,14 +236,48 @@
                     ["lineTo", width, height - r],
                     ["arcTo", width, height, width - r, height, r],
                     ["lineTo", r, height],
-                ], { fillStyle: "#E4579D" }, {});
+                    ["arcTo", 0, height, 0, height - r, r],
+                    ["lineTo", 0, r],
+                    ["arcTo", 0, 0, r, 0, r],
+                    ["closePath"]
+                ], { fillStyle: "#FFEA5A" });
                 shape.addChild(sp1);
                 shape.addChild(sp2);
+                shape.addChild(sp3);
                 Laya.Tween.to(sp1, { scaleX: 1.5, scaleY: 1.5, fillStyle: '#5E4594' }, 100, Laya.Ease.linearNone, new Laya.Handler(this, () => {
                     Laya.Tween.to(sp1, { scaleX: 1, scaleY: 1, fillStyle: '#964D98' }, 150, Laya.Ease.linearNone);
-                }), 1000);
-                Laya.timer.frameLoop(1, this, () => {
-                    sp1.rotation += 2;
+                }), 150);
+                Laya.timer.frameOnce(1, this, () => {
+                    sp3.graphics.drawCurves(0, 0, [
+                        width, r,
+                        width, 0,
+                        width - r, 0,
+                    ], '#964D98', 5);
+                    sp3.graphics.drawLine(width - r, 0, r, 0, '#964D98', 5);
+                });
+                Laya.timer.frameOnce(3, this, () => {
+                    sp3.graphics.drawCurves(0, 0, [
+                        r, 0,
+                        0, 0,
+                        0, r,
+                    ], '#964D98', 5);
+                    sp3.graphics.drawLine(0, r, 0, height - r, '#964D98', 5);
+                });
+                Laya.timer.frameOnce(5, this, () => {
+                    sp3.graphics.drawCurves(0, 0, [
+                        0, height - r,
+                        0, height,
+                        r, height,
+                    ], '#964D98', 5);
+                    sp3.graphics.drawLine(r, height, width - r, height, '#964D98', 5);
+                });
+                Laya.timer.frameOnce(7, this, () => {
+                    sp3.graphics.drawCurves(0, 0, [
+                        width - r, height,
+                        width, height,
+                        width, height - r,
+                    ], '#964D98', 5);
+                    sp3.graphics.drawLine(width, height - r, width, r, '#964D98', 5);
                 });
                 console.log("TCL: HelloLayabox -> constructor -> shape", shape);
                 Laya.stage.addChild(shape);
