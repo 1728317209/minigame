@@ -1,27 +1,82 @@
-export class HelloLayabox {
-    constructor() {
+import GameConfig from "./GameConfig";
+
+module laya {
+    import Stage = Laya.Stage;
+    import Text = Laya.Text;
+    import Event = Laya.Event;
+    import Browser = Laya.Browser;
+    import WebGL = Laya.WebGL;
+    export class HelloLayabox {
+      constructor(){
         // 不支持WebGL时自动切换至Canvas
-        const Stage = Laya.Stage;
-        const txt = new Laya.Text();
-        const { clientWidth, clientHeight } = Laya.Browser;
-        Laya.init(clientWidth, clientHeight, Laya.WebGL);
-        Laya.stage.alignV = Stage.ALIGN_MIDDLE;
-        Laya.stage.alignH = Stage.ALIGN_CENTER;
-        Laya.stage.scaleMode = "showall";
-        Laya.stage.bgColor = "#232628";
-        //给文本的text属性赋值
-        //设置文本内容
-        txt.text = "hello_world";
-         //设置文本区背景
-        txt.bgColor = "#c30c30";
-         //设置文本的宽高，不然 align、valign 不会生效
-        txt.width = clientWidth;
-        txt.height = clientHeight;
-        //设置文本水平居中
-        txt.align = "center";
-        //设置文本垂直居中
-        txt.valign = "middle";
-        Laya.stage.addChild(txt);
-    }
+        Laya.init(Browser.clientWidth, Browser.clientHeight, WebGL); 
+        Laya["Physics"] && Laya["Physics"].enable(); // 开启物理世界
+        Laya["DebugPanel"] && Laya["DebugPanel"].enable(); // Laya["DebugPanel"] undefined
+        Laya.stage.scaleMode = GameConfig.scaleMode;
+        Laya.stage.screenMode = GameConfig.screenMode;
+        Laya.stage.alignV = GameConfig.alignV;
+        Laya.stage.alignH = GameConfig.alignH;
+        Laya.stage.bgColor = "#3C4192";
+        this.createText();
+      }
+      test(): void {}
+      private createText(): void {
+        let shape = new Laya.Sprite();//创建一个 Sprite 类的实例对象 sprite 。
+        const lineWidth = 2;
+        const r = 20;
+        const [x, y, width, height] = [100, 100, 100, 100];
+        let sp1: Laya.Sprite = new Laya.Sprite();
+        let sp2: Laya.Sprite = new Laya.Sprite();
+        sp1.pos(x, y);
+        sp2.pos(x, y);
+        sp1.pivot(x + (width / 2), y + (height / 2));
+        sp2.pivot(x + (width / 2), y + (height / 2));
+        let halfWidth = (width / 2);
+        let halfHeight = (height / 2);
+        sp1.graphics.drawPath(x, y, [
+          ["moveTo", r, 0],
+          ["lineTo", width - r, 0],
+          ["arcTo", width, 0, width, 5, r],
+          ["lineTo", width, height - r],
+          ["arcTo", width, height, width - r, height, r],
+          ["lineTo", r, height],
+          ["arcTo", 0, height, 0, height - r, r],
+          ["lineTo", 0, r],
+          ["arcTo", 0, 0, r, 0, r],
+          ["closePath"]
+        ], { fillStyle: "#964D98" });
+        
+        sp2.graphics.drawPath(x, y, [
+          ["moveTo", r, 0],
+          ["lineTo", width - r, 0],
+          ["arcTo", width, 0, width, 5, r],
+          ["lineTo", width, height - r],
+          ["arcTo", width, height, width - r, height, r],
+          ["lineTo", r, height],
+          ["arcTo", 0, height, 0, height - r, r],
+          ["lineTo", 0, r],
+          ["arcTo", 0, 0, r, 0, r],
+          ["closePath"]
+        ], { fillStyle: "#E4579D" }, {});
+        
+        shape.addChild(sp1);
+        shape.addChild(sp2);
+        
+        
+        // var glowFilter: Laya.GlowFilter = new Laya.GlowFilter("#ffff00", 10, 0, 0);
+        // shape.filters = [glowFilter];
+        
+        Laya.Tween.to(sp1, { scaleX: 1.5, scaleY: 1.5, fillStyle: '#5E4594' }, 100, Laya.Ease.linearNone, new Laya.Handler(this, (): void => {
+          Laya.Tween.to(sp1, { scaleX: 1, scaleY: 1, fillStyle: '#964D98' }, 150, Laya.Ease.linearNone);
+        }), 1000)
+        Laya.timer.frameLoop(1, this, () => {
+          sp1.rotation += 2;
+        });
+        // Laya.Tween.to(shape, { y: 300 }, 1000, Laya.Ease.elasticOut, null, 1000);
+        
+        console.log("TCL: HelloLayabox -> constructor -> shape", shape)
+        Laya.stage.addChild(shape);//将此 shape 对象添加到显示列表。
+      }
+   }
 }
-new HelloLayabox();
+new laya.HelloLayabox();
